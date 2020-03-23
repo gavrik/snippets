@@ -56,7 +56,6 @@ BEGIN
                 for update skip locked limit 1 -- lock row for update. Another process will not get this row while reading table.
             )
         returning q1.id, q1.object into l_id, l_object;
-        commit;
     end;
     -- PERFORM pg_sleep(10); -- <- for debug only
     -- additional logic can be here
@@ -77,7 +76,7 @@ DO $$
 <<block>>
 DECLARE
     l_msg_count integer default 100;
-    l_i integer default 11;
+    l_i integer default 1;
 BEGIN
 loop
     exit when l_i = l_msg_count + 1;
@@ -92,6 +91,7 @@ DO $$
 <<get_block>>
 DECLARE
     l_result_id bigint default 0;
+    l_i integer default 1;
 BEGIN
 
 loop
@@ -102,11 +102,13 @@ loop
     if l_result_id is null
     then
         raise notice 'Sleep';
-        -- perform pg_sleep(1);
+        perform pg_sleep(1);
+        l_i := l_i + 1;
     else
         raise notice 'Result: %', l_result_id;
+        if l_i > 1 then l_i := 1; end if;
     end if;
+    exit when l_i = 5;
 end loop;
 
 END get_block $$;
-
