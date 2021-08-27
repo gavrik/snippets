@@ -13,7 +13,7 @@ parser.add_argument('--output', type=pathlib.Path, required=True, help='Output C
 
 args = parser.parse_args()
 
-STRAT_TAG = '<RECORD>'
+START_TAG = '<RECORD>'
 END_TAG = '</RECORD>'
 
 def chunks(filename, buffer_size=300):
@@ -43,7 +43,7 @@ def parseXML(XmlStr):
     return line[0:-1]
 
 def removeBadLines(xml):
-    return xml[findSubstring(xml, STRAT_TAG):findSubstring(xml,END_TAG)+len(END_TAG)]
+    return xml[findSubstring(xml, START_TAG):findSubstring(xml,END_TAG)+len(END_TAG)]
 
 def main(inputPath, buffer_size):
     i = 0
